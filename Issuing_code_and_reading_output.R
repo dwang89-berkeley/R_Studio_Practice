@@ -2,6 +2,8 @@ library(tidyverse)
 library(ggplot2)
 library(patchwork)
 
+theme_set(theme_minimal()) # Sets the theme of EVERY plot to theme minimal
+
 getwd() # Basically the R equivalent of pwd
 
 setwd('../r_bridge/code') # Basically brings you up one working directory
@@ -137,6 +139,71 @@ squirrel_subset_by_color_2 %>%
   )
 
 # 3.3.8 Controlling the Plot Extents Using lims() and coord_cartesian()
+# Using coord_cartesian
+ss_plot_coord_cartesian <- squirrel_subset_by_color_2 %>%
+  ggplot() +
+  aes(x = date_f, y = count_of_squirrels, color = primary_fur_color) +
+  stat_smooth(se = FALSE, span = 0.8) +
+  labs(
+    title = 'Decreasing Count of Squirrels Through Time',
+    subtitle = 'Moving average smoother estimate',
+    x = 'Date of Observation',
+    y = 'Count of Squirrels',
+    color = 'Primary Fur Color'
+  ) +
+  coord_cartesian( # The full data is feeding here, but I'm limiting the coordinate
+    # system to only what I want to show
+    xlim = c(as.Date.character('2018-10-08'),
+             as.Date.character('2018-10-15')),
+    ylim = c(-10,110)
+  )
+
+# Using lims()
+ss_plot_lims <- squirrel_subset_by_color_2 %>%
+  ggplot() +
+  aes(x = date_f, y = count_of_squirrels, color = primary_fur_color) +
+  stat_smooth(se = FALSE, span = 0.8) +
+  labs(
+    title = 'Decreasing Count of Squirrels Through Time',
+    subtitle = 'Moving average smoother estimate',
+    x = 'Date of Observation',
+    y = 'Count of Squirrels',
+    color = 'Primary Fur Color'
+  ) +
+  lims( # Limits the data to only that from 10/8/2018 to 10/15/2018
+    x = c(as.Date.character('2018-10-08'),
+             as.Date.character('2018-10-15'))
+  )
+
+# Plotting side by side
+ss_plot_coord_cartesian | ss_plot_lims
+# You can see above that the graphs look wildly different, since lims literally
+# limited the data that was being put into the graph
+
+
+# 3.3.11 Setting the Theme
+squirrel_subset_by_color_2 %>%
+  ggplot() +
+  aes(x = date_f, y = count_of_squirrels, color = primary_fur_color) +
+  stat_smooth(se = FALSE, span = 0.8) +
+  labs(
+    title = 'Decreasing Count of Squirrels Through Time',
+    subtitle = 'Moving average smoother estimate',
+    x = 'Date of Observation',
+    y = 'Count of Squirrels',
+    color = 'Primary Fur Color'
+  ) +
+  coord_cartesian( # The full data is feeding here, but I'm limiting the coordinate
+    # system to only what I want to show
+    xlim = c(as.Date.character('2018-10-08'),
+             as.Date.character('2018-10-15')),
+    ylim = c(-10,110)
+  ) +
+  theme_minimal() # Don't technically need this anymore because we've set the theme above
+
+# If you want more themes, you can go to this:
+#   install.packages('ggthemes', dependencies = TRUE)
+#   library(ggthemes)
 
 
 
